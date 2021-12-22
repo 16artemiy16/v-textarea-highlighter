@@ -12,6 +12,8 @@ export default Vue.extend({
 
 <template>
   <div id="app">
-    <v-textarea-highlighter />
+    <v-textarea-highlighter>
+      <textarea>Hello! Welcome here!</textarea>
+    </v-textarea-highlighter>
   </div>
 </template>

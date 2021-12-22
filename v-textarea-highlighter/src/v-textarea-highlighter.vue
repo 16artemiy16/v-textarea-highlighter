@@ -17,24 +17,34 @@ export default Vue.extend({
     },
   },
   methods: {
+    getElTextarea(): Element {
+      return this.$slots.default?.[0]?.elm as Element;
+    },
+    getElBackdrop(): Element {
+      return this.$refs.backdrop as Element;
+    },
     alignBackdropStyle() {
-      const textarea = this.$refs.textarea as Element;
-      const { padding, font, letterSpacing, border } = window.getComputedStyle(textarea);
+      const { padding, font, letterSpacing, border } = window.getComputedStyle(this.getElTextarea());
       this.backdropStyle = { padding, font, letterSpacing, border };
     },
     handleScroll() {
-      const area = this.$refs.textarea as HTMLElement;
-      const backdrop = this.$refs.backdrop as HTMLElement;
-      const scrollTop = area.scrollTop;
-      const scrollLeft = area.scrollLeft;
-
-      (backdrop as any).scrollTop = scrollTop;
-      (backdrop as any).scrollLeft = scrollLeft;
+      this.getElBackdrop().scrollTop = this.getElTextarea().scrollTop;
+      this.getElBackdrop().scrollLeft = this.getElTextarea().scrollLeft;
     },
+    handleInput(e: any) {
+      this.$data.text = e.target.value;
+    }
   },
   mounted() {
     this.alignBackdropStyle();
+    this.$data.text = (this.getElTextarea() as any).value;
+    this.getElTextarea().addEventListener('scroll', this.handleScroll);
+    this.getElTextarea().addEventListener('input', this.handleInput);
   },
+  beforeDestroy() {
+    this.getElTextarea().removeEventListener('scroll', this.handleScroll);
+    this.getElTextarea().removeEventListener('input', this.handleInput);
+  }
 });
 </script>
 
@@ -43,7 +53,7 @@ export default Vue.extend({
     <div class="backdrop" ref="backdrop" :style="backdropStyle">
       <div class="highlights" ref="highlights" v-html="lightedHtml"></div>
     </div>
-    <textarea ref="textarea" v-model="text" @scroll="handleScroll" />
+    <slot></slot>
   </div>
 </template>
 
