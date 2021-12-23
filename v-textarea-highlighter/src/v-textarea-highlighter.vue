@@ -24,8 +24,9 @@ export default Vue.extend({
       return this.$refs.backdrop as Element;
     },
     alignBackdropStyle() {
-      const { padding, font, letterSpacing, border } = window.getComputedStyle(this.getElTextarea());
-      this.backdropStyle = { padding, font, letterSpacing, border };
+      const { padding, font, letterSpacing, border, background } = window.getComputedStyle(this.getElTextarea());
+      (this.getElTextarea() as any).style.background = 'transparent';
+      this.backdropStyle = { padding, font, letterSpacing, border, background };
     },
     handleScroll() {
       this.getElBackdrop().scrollTop = this.getElTextarea().scrollTop;
