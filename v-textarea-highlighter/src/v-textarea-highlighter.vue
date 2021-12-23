@@ -1,5 +1,8 @@
 <script lang="ts">
 import Vue from 'vue';
+import { applyFormatters } from '@/utils/formatter.utils';
+
+import formatters from './constants/default-formatters.constant';
 
 export default Vue.extend({
   name: 'VTextareaHighlighter',
@@ -11,9 +14,9 @@ export default Vue.extend({
   },
   computed: {
     lightedHtml() {
-      return this.$data.text
-          .replace(/\n$/g, '\n\n')
-          .replace(/[A-Z].*?\b/g, '<mark>$&</mark>');
+      const text = this.$data.text
+          .replace(/\n$/g, '\n\n'); // This fixes the break bug
+      return applyFormatters(text, formatters);
     },
   },
   methods: {
@@ -94,7 +97,7 @@ textarea {
   resize: none;
 }
 
-mark {
+::v-deep mark {
   border-radius: 3px;
   color: transparent;
   background-color: #b1d5e5;
