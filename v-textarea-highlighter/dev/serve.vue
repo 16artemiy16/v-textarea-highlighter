@@ -6,14 +6,22 @@ export default Vue.extend({
   name: 'ServeDev',
   components: {
     VTextareaHighlighter
+  },
+  data() {
+    return {
+      rules: [
+        ['limited', 'red', 50],
+        ['capital', 'yellow'],
+      ],
+    };
   }
 });
 </script>
 
 <template>
   <div id="app">
-    <v-textarea-highlighter>
-      <textarea style="background: lightblue">Hello! Welcome here!</textarea>
+    <v-textarea-highlighter :rules="rules">
+      <textarea>Hello! Welcome here!</textarea>
     </v-textarea-highlighter>
   </div>
 </template>

@@ -2,21 +2,34 @@
 import Vue from 'vue';
 import { applyFormatters } from '@/utils/formatter.utils';
 
-import formatters from './constants/default-formatters.constant';
+import formatterResolver from './services/formatter-resolver.service';
 
 export default Vue.extend({
   name: 'VTextareaHighlighter',
+  props: {
+    rules: {
+      default: () => [],
+      type: Array,
+      validate: (value: any[]) => {
+        if (Array.isArray(value)) {
+          return value.every((item) => Array.isArray(item));
+        }
+        return false;
+      },
+    },
+  },
   data() {
     return {
       text: '',
       backdropStyle: {},
+      formatters: [],
     };
   },
   computed: {
     lightedHtml() {
       const text = this.$data.text
           .replace(/\n$/g, '\n\n'); // This fixes the break bug
-      return applyFormatters(text, formatters);
+      return applyFormatters(text, this.$data.formatters);
     },
   },
   methods: {
@@ -29,7 +42,7 @@ export default Vue.extend({
     alignBackdropStyle() {
       const { padding, font, letterSpacing, border, background } = window.getComputedStyle(this.getElTextarea());
       (this.getElTextarea() as any).style.background = 'transparent';
-      this.backdropStyle = { padding, font, letterSpacing, border, background };
+      this.$data.backdropStyle = { padding, font, letterSpacing, border, background };
     },
     handleScroll() {
       this.getElBackdrop().scrollTop = this.getElTextarea().scrollTop;
@@ -38,6 +51,9 @@ export default Vue.extend({
     handleInput(e: any) {
       this.$data.text = e.target.value;
     }
+  },
+  created() {
+    this.$data.formatters = formatterResolver.resolveList(this.$props.rules as any[]);
   },
   mounted() {
     this.alignBackdropStyle();
@@ -100,8 +116,5 @@ textarea {
 ::v-deep mark {
   border-radius: 3px;
   color: transparent;
-  background-color: #b1d5e5;
 }
-
-
 </style>
