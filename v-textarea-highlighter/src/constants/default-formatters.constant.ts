@@ -1,33 +1,9 @@
-import markForHighlight from '@/utils/mark-for-highlight.util';
+import limitedLen from '@/formatters/limited-len.formatter';
+import capitalLetter from '@/formatters/capital-letter.formatter';
 
 const DEFAULT_FORMATTERS: FormatterI[] = [
-  {
-    fn: (text) => {
-      const textMaxLength = 15;
-
-      const stripped = text.substr(0, textMaxLength);
-      const excess = text.substr(textMaxLength);
-
-      return stripped + markForHighlight(excess);
-    },
-    styles: {
-      background: 'pink',
-    },
-  },
-  /** Every word starting from capital letter. **/
-  {
-    regexp: /[A-Z].*?\b/g,
-    styles: {
-      background: 'yellow',
-    },
-  },
-  /** Every capital letter **/
-  {
-    regexp: /[A-Z]/g,
-    styles: {
-      background: 'lightpink'
-    }
-  },
+  limitedLen('red', 50),
+  capitalLetter('green')
 ];
 
 export default DEFAULT_FORMATTERS;
